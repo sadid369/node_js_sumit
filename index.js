@@ -29,12 +29,38 @@ const http = require("http");
 
 const server = http.createServer((req, res) => {
   if (req.url === "/") {
-    res.write("Hello Programmers\n");
+    res.write(`<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+      </head>
+      <body>
+        <form method="post" action="/process">
+          <input name="message" />
+        </form>
+      </body>
+    </html>
+
+    `);
     res.write("How are you");
     res.end();
-  } else if (req.url === "/about") {
-    res.write("This is About page\n");
-    res.end();
+  } else if ((req.url === "/process") & (req.method === "POST")) {
+    // const body = [];
+    // req.on("data", (chunk) => {
+    //   res.write(chunk.toString());
+    // });
+    req.pipe(res);
+    // req.on("end", () => {
+    //   console.log("Stream Finished");
+    //   const parsedBody = Buffer.concat(body).toString();
+    //   console.log(parsedBody);
+    //   res.write(parsedBody);
+    //   res.end();
+    // });
+    // res.write("Thank you for submitted\n");
   } else {
     res.write("Not Found!!!!\n");
     res.end();
@@ -44,3 +70,14 @@ const server = http.createServer((req, res) => {
 server.listen(8000, () => {
   console.log("Server is running");
 });
+
+// const ourReadStream = fs.createReadStream(`${__dirname}/bigData.txt`, "utf-8");
+// ourReadStream.on("data", (data) => {
+//   console.log(data);
+// });
+// const ourReadStream = fs.createReadStream(`${__dirname}/bigData.txt`, "utf-8");
+// const ourWriteStream = fs.createWriteStream(`${__dirname}/output.txt`);
+// // ourReadStream.on("data", (chunk) => {
+// //   ourWriteStream.write(chunk);
+// // });
+// ourReadStream.pipe(ourWriteStream);
