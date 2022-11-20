@@ -6,9 +6,20 @@
 const http = require("http");
 const environment = require("./helpers/enviroments");
 const { handleReqRes } = require("./helpers/handleReqRes");
+const data = require("./lib/data");
 //App object - Module scaffolding
 
 const app = {};
+//testing file system
+// @TODO: poremuche dibo
+data.delete(
+  "test",
+  "newFile",
+
+  (err) => {
+    console.log(err);
+  }
+);
 
 // create server
 
