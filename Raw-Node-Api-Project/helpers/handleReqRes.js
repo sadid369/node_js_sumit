@@ -8,7 +8,7 @@ const routes = require("../routes");
 const {
   notFoundHandler,
 } = require("../handales/routeHandales/notFoundHandaler");
-
+const { parseJSON } = require("../helpers/utilities");
 // module scaffolding
 const handler = {};
 
@@ -35,21 +35,24 @@ handler.handleReqRes = (req, res) => {
   const chosenHandaler = routes[trimmedPath]
     ? routes[trimmedPath]
     : notFoundHandler;
+  // if (routes[trimmedPath] === trimmedPath) {
+  // }
   req.on("data", (buffer) => {
     realData += decoder.write(buffer);
   });
   req.on("end", () => {
     realData += decoder.end();
 
+    requestProperties.body = parseJSON(realData);
     chosenHandaler(requestProperties, (statusCode, payload) => {
       statusCode = typeof statusCode === "number" ? statusCode : 500;
       payload = typeof payload === "object" ? payload : {};
       const payloadString = JSON.stringify(payload);
+      res.setHeader("Content-Type", "application/json");
       res.writeHead(statusCode);
       res.end(payloadString);
     });
     //response handle
-    res.end("Hello World");
   });
 };
 
