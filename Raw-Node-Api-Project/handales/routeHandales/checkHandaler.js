@@ -260,6 +260,98 @@ handler._check.put = (requestProperties, callback) => {
   }
 };
 
-handler._check.delete = (requestProperties, callback) => {};
+handler._check.delete = (requestProperties, callback) => {
+  const id =
+    typeof requestProperties.queryStringObject.id === "string" &&
+    requestProperties.queryStringObject.id.trim().length === 20
+      ? requestProperties.queryStringObject.id
+      : false;
+
+  console.log(id);
+  if (id) {
+    // lookup the check
+    data.read("checks", id, (err, checkData) => {
+      let userPhone = parseJSON(checkData).userPhone;
+      // console.log(dataCheck);
+      if (!err && checkData) {
+        const token =
+          typeof requestProperties.headersObject.token === "string"
+            ? requestProperties.headersObject.token
+            : false;
+
+        tokenHandler._token.verify(
+          token,
+          parseJSON(checkData).userPhone,
+          (tokenIsValid) => {
+            if (tokenIsValid) {
+              // delete the check data
+              data.delete("checks", id, (err1) => {
+                if (!err1) {
+                  data.read(
+                    "users",
+                    parseJSON(checkData).userPhone,
+                    (err2, userData) => {
+                      let userObject = parseJSON(userData);
+                      if (!err2 && userData) {
+                        let userChecks =
+                          typeof userObject.checks === "object" &&
+                          userObject.checks instanceof Array
+                            ? userObject.checks
+                            : [];
+                        //remove the deleted check id from user's list of checks
+                        let checkPosition = userChecks.indexOf(id);
+                        if (checkPosition > -1) {
+                          userChecks.splice(checkPosition, 1);
+                          // resave the user data
+                          userObject.checks = userChecks;
+                          data.update(
+                            "users",
+                            userObject.phone,
+                            userObject,
+                            (err3) => {
+                              if (!err3) {
+                                callback(200);
+                              } else {
+                                callback(500, {
+                                  error: "There was a server side problem!",
+                                });
+                              }
+                            }
+                          );
+                        } else {
+                          callback(500, {
+                            error:
+                              "The check id that yod are trying to remove is not found in user",
+                          });
+                        }
+                      } else {
+                        callback(500, {
+                          error: "There was a server side problem!",
+                        });
+                      }
+                    }
+                  );
+                } else {
+                  callback(500, {
+                    error: "There was a server side problem!",
+                  });
+                }
+              });
+            } else {
+              console.log(
+                `token: ${token}, phone: ${parseJSON(checkData).userPhone}`
+              );
+              callback(403, { error: "Authentication Failure!" });
+            }
+          }
+        );
+      } else {
+        callback(500, { error: "You have a problem in your request 2" });
+      }
+    });
+  } else {
+    callback(400, { error: "You have a problem in your request" });
+  }
+};
 
 module.exports = handler;
