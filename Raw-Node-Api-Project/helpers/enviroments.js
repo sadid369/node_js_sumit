@@ -15,12 +15,22 @@ environments.staging = {
   envName: "staging",
   secretKey: "hdhdhslkahdfaefhblklszg",
   maxChecks: 5,
+  twilio: {
+    fromPhone: "+1500555006",
+    accountSid: "AC983d3d8bc2bed31e743d84b015a56210",
+    authToken: "a6ec161464833300528ceebbbdc1bfd9",
+  },
 };
 environments.production = {
   port: 5000,
   envName: "production",
   secretKey: "zjbfjbafbaFbabfbfbf",
   maxChecks: 5,
+  twilio: {
+    fromPhone: "+1500555006",
+    accountSid: "AC983d3d8bc2bed31e743d84b015a56210",
+    authToken: "a6ec161464833300528ceebbbdc1bfd9",
+  },
 };
 
 //determine which environment was passed

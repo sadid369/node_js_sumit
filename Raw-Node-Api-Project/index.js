@@ -7,20 +7,14 @@ const http = require("http");
 const environment = require("./helpers/enviroments");
 const { handleReqRes } = require("./helpers/handleReqRes");
 const data = require("./lib/data");
+const { sendTwilioSms } = require("./helpers/notifications");
 //App object - Module scaffolding
 
 const app = {};
-//testing file system
-// @TODO: poremuche dibo
-// data.delete(
-//   "test",
-//   "newFile",
-
-//   (err) => {
-//     console.log(err);
-//   }
-// );
-
+//@TODO: remove letter
+sendTwilioSms("01710450779", "Hello World", (err) => {
+  console.log(`This is the error`, err);
+});
 // create server
 
 app.createServer = () => {
