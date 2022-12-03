@@ -1,11 +1,24 @@
 const express = require("express");
-const ejs = require("ejs");
+
 const app = express();
-app.set("view engine", "ejs");
+const adminRouter = express.Router();
+const logger = (req, res, next) => {
+  console.log(
+    `${Date(Date.now()).toLocaleString()} - ${req.method} -- ${
+      req.originalUrl
+    } -- ${req.protocol} -- ${req.ip}`
+  );
+  next();
+};
+adminRouter.use(logger);
+adminRouter.get("/b", (req, res) => {
+  res.send("Dash");
+});
+
+app.use("/a", adminRouter);
+
 app.get("/about", (req, res) => {
-  res.render("pages/about", {
-    name: "Bangladesh",
-  });
+  res.send("About");
 });
 
 app.listen(3000, () => {
