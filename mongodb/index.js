@@ -10,7 +10,7 @@ mongoose
   .catch((err) => console.log(err));
 
 //application route
-app.use("./todo", todoHandler);
+app.use("/todo", todoHandler);
 //default Error
 function errorHandler(err, req, res, next) {
   if (res.headerSent) {
