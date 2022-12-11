@@ -56,5 +56,16 @@ router.post("/login", async (req, res) => {
     res.status(401).json({ error: `Authentication Failed `, error });
   }
 });
+//GET ALL USERS
+router.get("/all", async (req, res) => {
+  try {
+    const user = await User.find({}).populate("todos");
+    res.status(200).json({ message: `Success`, data: user });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `There was an error on the server side`, error });
+  }
+});
 
 module.exports = router;
