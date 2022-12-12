@@ -1,13 +1,13 @@
 //external imports
 const express = require("express");
 //internal export
-const { getLogin } = require("../controller/loginController");
+const { getInbox } = require("../controller/inboxController");
 const decorateHtmlResponse = require("../middlewares/common/decorateHtmlResponse");
 
 const router = express.Router();
 
-//login page
+//inbox page
 
-router.get("/", decorateHtmlResponse("Login"), getLogin);
+router.get("/", decorateHtmlResponse("Inbox"), getInbox);
 
 module.exports = router;
