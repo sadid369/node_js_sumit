@@ -1,8 +1,16 @@
+//external imports
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+//internal imports
+const {
+  notFoundHandler,
+  errorHandler,
+} = require("./middlewares/common/errorHandler");
+const loginRouter = require("./router/loginRouter");
+/////////////////////////////////
 const app = express();
 dotenv.config();
 //database connection
@@ -18,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //set view engine
 
-// app.set("view engine", "ejs");
+app.set("view engine", "ejs");
 
 // set static folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -27,9 +35,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //routing setup
-
-//error handling
-
+app.use("/", loginRouter);
+// app.use("/users", usersRouter);
+// app.use("/inbox", inboxRouter);
+//404 not found
+app.use(notFoundHandler);
+//common error handling
+app.use(errorHandler);
 app.listen(process.env.PORT, () => {
   console.log(`App Listening to port ${process.env.PORT} `);
 });
